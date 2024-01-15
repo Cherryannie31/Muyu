@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KnockKnock</title>
+  <link rel="shortcut icon" href="81.png">
+  <style>
+    body {
+      background: #000;
+    }
+
+    .container {
+      width: 90vw;
+      height: 90vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .text {
+      position: relative;
+    }
+
+    .count {
+      color: #fff;
+      position: relative;
+      top: 0;
+      left: 0;
+      text-align: center;
+    }
+
+    .count strong {
+      color: #fff;
+    }
+
+    .click {
+      animation: am2 ease 0.5s;
+    }
+
+    span {
+      color: #fff;
+      font-size: 20px;
+      width: 200px;
+      position: absolute;
+      top: -120px;
+      left: -20px;
+      opacity: 0;
+      animation: am ease-out 1.5s;
+    }
+
+    @keyframes am {
+      from {
+        transform: translateY(0);
+        opacity: 1;
+      }
+      
+      100% {
+        transform: translateY(-35px);
+        opacity: 0;
+      }
+    }
+
+    @keyframes am2 {
+      0% {
+        transform: scale(1,1);
+      }
+      
+      30% {
+        transform: scale(0.98, 0.98);
+      }
+
+      60% {
+        transform: scale(1.01,1.01);
+      }
+      
+      100% {
+        transform: scale(1, 1);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="count"></div>
+  <div class="container">
+    <img src="./muyu.png" alt="" onclick="knock()">
+    <div class="text"></div>
+  </div>
+
+  <script>
+    // count
+    let c = 0;
+    // audio
+    let audio = new Audio("./muyu.mp3");
+    // 刷新或载入页面时读取次数
+    count();
+
+    function knock() {
+      // 木鱼
+      muyu();
+      // 功德
+      merit();
+      // 声音
+      sound();
+      // 计数 count()
+      count(1);
+    }
+
+    function muyu() {
+      let knocker = document.querySelector("img");
+      if (knocker.classList.contains('click')) {
+        knocker.classList.remove('click');
+        void knocker.offsetWidth;  // 强制浏览器计算元素样式
+        knocker.classList.add('click');  // 会重新启动动画
+      } else {
+        knocker.classList.add('click');
+      }
+    }
+
+    function merit() {
+      let words = document.querySelector('.text');
+      let newWords = document.createElement("span");
+
+      newWords.textContent = "功德+1";
+      words.appendChild(newWords);
+
+      setTimeout(function () {
+        newWords.remove();
+      }, 2000)
+    }
+
+    function sound() {
+      if (audio.pause) {
+        audio.play(); // 直接播放
+      } else {
+        audio.pause();  // 停止
+        audio.currentTime = 0;  // 重置音频进度
+        audio.play();  // 重新播放
+      }
+    }
+
+    function count(e=0) {
+    /*
+      if (typeof(Storage) != 'undefined') {
+        if (localStorage.clickcount) {
+          localStorage.clickcount = Number(localStorage.clickcount)+1;
+        } else {
+          localStorage.clickcount=1;
+        }
+        document.querySelector("count").innerHTML = "您的功德：" + c;
+      } else {
+        document.querySelector("count").innerHTML == "Sorry, your browser does not support web storage...";
+      }
+    */
+
+      if (e) c++;  // e=0 载入页面全局调用，e=1自增1节点沐浴调用
+      if (window.localStorage) {
+        if (localStorage.getItem("count") == null) {
+          localStorage.setItem("count", 0); // 设置初始值
+        } else {
+          if (!e) {
+            c = localStorage.getItem("count");
+          } else {
+            localStorage.setItem("count", c); 
+          }
+        }
+      }
+      let title = document.querySelector(".count");
+      title.innerHTML = "您的功德：" + c;
+    }
+  </script>
+</body>
+</html>
